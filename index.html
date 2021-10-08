@@ -1,50 +1,136 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Demo</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
-        <style>
-            body{
-                display:flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            #box{
-                padding:1rem;
-                width: 90%;
-                height:4rem;
-                border:2px solid cyan;
-                margin: 2rem 0rem;
-            }
-            #inputinvoice{
-                border: 2px solid cyan;
-                padding: 0.5rem;
-                border-radius: 5px;
-            }
-            .button{
-                background-color:cyan;
-                border: 1px solid black;
-                padding: 0.5rem;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Invoice Demo</h1>
-        <div id="box"></div>
-        <div id="inputcontainer">
-            <input id="inputinvoice" type="text" />
-            <button class="button" onclick=invoice(); type="submit"><i class="far fa-paper-plane"></i></button>
-            <input id="inputfile" class="button" type="file" /> 
-        </div>
-    
+
+<head>
+    <meta charset=utf-8 name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+        integrity="sha384-H8oq+jCbb0QVbhroj1DucOj59MYLAHR4vQPc0ClgJJzMS/YL7OcRJfM/ehkfKqhU" crossorigin="anonymous">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #b4c6e6;
+        }
+
+        #display-box {
+            word-wrap: break-word;
+            padding: 1rem;
+            width: 80%;
+            height: 20rem;
+            border: 2px solid rgb(28, 124, 124);
+            margin: 2rem 0rem;
+        }
+
+        #inputinvoice {
+            width: 50%;
+            border: 2px solid black;
+            padding: 1rem;
+        }
+
+        input[type=reset] {
+            background-color: blueviolet;
+        }
+
+        #inputcontainer {
+            margin-bottom: 0.5rem;
+        }
+
+        #display-image {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Invoice Demo</h1>
+    <div id="display-box"></div>
+    <div id="inputcontainer">
+        <input id="inputinvoice" type="text" />
+
+        <label for="submitbtn">
+            <i class="fa fa-paper-plane"
+                style="font-size: 24px; border: 1px solid black; padding: 10px; margin: 5px; background-color: rgb(141, 226, 226);"></i>
+        </label>
+
+        <input id="submitbtn" type="submit" onclick="invoice()" style="display: none; visibility: none" />
+
+        <label for="inputfile">
+            <i class="fa fa-camera"
+                style="font-size: 24px; border: 1px solid black; padding: 10px; margin: 5px; background-color: rgb(141, 226, 226);"></i>
+        </label>
+
+        <input id="inputfile" class="button" type="file" style="display: none; visibility: none;"
+            onchange="getImage(this.value); imageUploaded();" />
+
+        <div id="display-image"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    <script src="gfg.js"></script>
+
     <script>
-        function invoice(){
+        function getImage(path) {
+            var newpath = path.replace(/^C:\\fakepath\\/, "")
+            $('#display-image').html(newpath);
+
+            var file = document.querySelector('input[type=file]')['files'][0];
+
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                base64String = reader.result.replace("data:", "")
+                    .replace(/^.+,/, "");
+                imageBase64Stringsep = base64String;
+            }
+            reader.readAsDataURL(file);
+        }
+        function invoice() {
             var inputinvoice = document.getElementById("inputinvoice").value;
-            var inputfile = document.getElementById("inputfile").value;
-           document.getElementById("box").innerHTML = "Invoice number : "+ inputinvoice + " has been sent.<br/>"+"Image "+inputfile+"has been uploaded";
+            var path = document.getElementById("inputfile").value;
+            var inputfile = path.replace(/^C:\\fakepath\\/, "")
+            if (inputinvoice == "" && inputfile == "") {
+                document.getElementById("display-box").innerHTML = "No input detected.<br/>Please input either an invoice number or an image.";
+            } else if (inputinvoice == "") {
+                document.getElementById("display-box").innerHTML = "Image " + path + " has been uploaded.<br/><br/>Base64String image" + base64String;
+            } else if (inputfile == "") {
+                document.getElementById("display-box").innerHTML = "Invoice number : " + inputinvoice;
+                document.getElementById("inputinvoice").value;
+            } else if (inputinvoice != "" && inputfile != "") {
+                document.getElementById("display-box").innerHTML = "Upload either one";
+            }
         }
     </script>
-    </body>
+
+    <script>
+        let base64String = "";
+        function imageUploaded() {
+            var file = document.querySelector(
+                'input[type=file]')['files'][0];
+
+            var reader = new FileReader();
+            console.log("next");
+
+            reader.onload = function () {
+                base64String = reader.result.replace("data:", "")
+                    .replace(/^.+,/, "");
+
+                imageBase64Stringsep = base64String;
+
+                // alert(imageBase64Stringsep);
+                console.log(base64String);
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function displayString() {
+            console.log("Base64String about to be printed");
+            alert(base64String);
+        }
+    </script>
+</body>
 
 </html>
